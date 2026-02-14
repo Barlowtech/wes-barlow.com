@@ -2,7 +2,7 @@
 // LatestFeed.astro - Recent content feed component
 // Props: items - Array of {title, href, type, date, description}
 // Shows 3 items in a clean list/card layout
-// Type colors: Track = rose (#b04a6f), Insight = blue (#5b8fb9)
+// Type colors: Track = rose (#b04a6f), Episode = amber (#d4a04a), Insight = blue (#5b8fb9)
 
 interface FeedItem {
   title: string;
@@ -22,6 +22,7 @@ const { items, title = 'Latest' } = Astro.props;
 const getTypeColor = (type: string): string => {
   const normalized = type.toLowerCase();
   if (normalized === 'track') return '#b04a6f';
+  if (normalized === 'episode') return '#d4a04a';
   if (normalized === 'insight') return '#5b8fb9';
   return '#6b7280'; // Default neutral
 };

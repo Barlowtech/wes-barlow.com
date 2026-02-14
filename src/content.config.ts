@@ -17,6 +17,19 @@ const music = defineCollection({
   }),
 });
 
+const audio = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/audio" }),
+  schema: z.object({
+    title: z.string(),
+    format: z.enum(['podcast', 'audiobook', 'audio-drama']),
+    style: z.string().optional(),
+    date: z.coerce.date(),
+    excerpt: z.string(),
+    speechifyUrl: z.string().optional(),
+    featured: z.boolean().default(false),
+  }),
+});
+
 const insights = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/insights" }),
   schema: z.object({
@@ -29,4 +42,4 @@ const insights = defineCollection({
   }),
 });
 
-export const collections = { music, insights };
+export const collections = { music, audio, insights };

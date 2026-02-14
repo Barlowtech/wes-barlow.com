@@ -64,6 +64,52 @@ const description = "Audiotelic — a multidisciplinary music project where the 
     </div>
   </section>
 
+  <!-- Featured Tracks with Suno Embeds -->
+  <section class="py-12 md:py-16 px-6 bg-bg-surface/50">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-8 h-1 bg-accent-music rounded-full"></div>
+        <h2 class="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+          Featured Tracks
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Training My Replacement -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-heading font-bold text-text-primary">Training My Replacement</h3>
+          <p class="text-sm text-text-secondary font-body">An AI-consciousness narrative about obsolescence, told with a wink.</p>
+          <div class="rounded-lg overflow-hidden border border-border">
+            <iframe
+              src="https://suno.com/embed/b3707cb6-5df4-49f0-b376-a646a38e2715"
+              width="100%"
+              height="150"
+              style="border: none; border-radius: 8px;"
+              allow="autoplay"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Runaround Who -->
+        <div class="space-y-3">
+          <h3 class="text-lg font-heading font-bold text-text-primary">Runaround Who</h3>
+          <p class="text-sm text-text-secondary font-body">A rockabilly romp that proves AI-human collaboration can make you grin.</p>
+          <div class="rounded-lg overflow-hidden border border-border">
+            <iframe
+              src="https://suno.com/embed/1fdf3927-9640-4f86-90dd-893281f432a6"
+              width="100%"
+              height="150"
+              style="border: none; border-radius: 8px;"
+              allow="autoplay"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Albums & Tracks -->
   {albumEntries.map(([albumName, tracks]) => {
     const sortedTracks = tracks.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());

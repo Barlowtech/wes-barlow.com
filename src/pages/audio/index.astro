@@ -1,0 +1,148 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+
+// Get all audio content
+const allAudio = await getCollection('audio');
+
+// Sort by date (newest first)
+const sortedAudio = allAudio.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+// Get featured episodes
+const featured = sortedAudio.filter(ep => ep.data.featured);
+const rest = sortedAudio.filter(ep => !ep.data.featured);
+
+// Style badge colors
+const getStyleColor = (style: string): string => {
+  const s = style?.toLowerCase() || '';
+  if (s.includes('lecture')) return '#5b8fb9';
+  if (s.includes('thoughtful')) return '#5b8fb9';
+  if (s.includes('storytelling')) return '#d4a04a';
+  if (s.includes('late night')) return '#b04a6f';
+  return '#6b7280';
+};
+
+const formatDate = (d: Date): string => {
+  return new Date(d).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+const description = "AI-generated podcasts, audiobooks, and audio experiments. Stories brought to life through voice and sound.";
+---
+
+<BaseLayout title="Audio" description={description}>
+  <HeroSection
+    title="Audio"
+    subtitle="Stories through voice and sound."
+    accent="var(--color-accent-creative)"
+  />
+
+  <!-- Intro -->
+  <section class="py-16 md:py-20 px-6 bg-bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-lg text-text-secondary font-body leading-relaxed mb-4">
+        AI-generated podcasts exploring everything from enterprise data strategy to absurdist fiction to true crime. Created with Speechify's AI podcast tools, these episodes range from serious industry analysis to darkly comic storytelling experiments.
+      </p>
+      <p class="text-lg text-text-secondary font-body leading-relaxed">
+        The same creative impulse behind Audiotelic — the making is the point — applied to the spoken word.
+      </p>
+    </div>
+  </section>
+
+  <!-- Featured Episodes -->
+  {featured.length > 0 && (
+    <section class="py-12 md:py-16 px-6 bg-bg-elevated">
+      <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-8 h-1 bg-accent-creative rounded-full"></div>
+          <h2 class="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+            Featured Episodes
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featured.map(ep => {
+            const styleColor = getStyleColor(ep.data.style || '');
+            return (
+              <article class="card-hover bg-bg-surface border border-border rounded-lg overflow-hidden flex flex-col">
+                <div class="p-6 flex flex-col gap-3 flex-1">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide"
+                      style={{ backgroundColor: `${styleColor}20`, color: styleColor }}
+                    >
+                      {ep.data.style || ep.data.format}
+                    </span>
+                    <span class="text-xs text-text-muted">{formatDate(ep.data.date)}</span>
+                  </div>
+
+                  <h3 class="text-lg font-heading font-bold text-text-primary leading-snug">
+                    {ep.data.title}
+                  </h3>
+
+                  <p class="text-sm text-text-secondary font-body line-clamp-3">
+                    {ep.data.excerpt}
+                  </p>
+
+                  <div class="mt-auto pt-3 border-t border-border flex items-center text-xs text-text-muted">
+                    <span class="uppercase tracking-wide font-heading">{ep.data.format}</span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- All Episodes -->
+  <section class="py-12 md:py-16 px-6 bg-bg-primary">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-8 h-1 bg-accent-creative rounded-full"></div>
+        <h2 class="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+          All Episodes
+        </h2>
+        <span class="text-sm text-text-muted font-body">
+          {sortedAudio.length} episodes
+        </span>
+      </div>
+
+      <div class="space-y-4">
+        {rest.map(ep => {
+          const styleColor = getStyleColor(ep.data.style || '');
+          return (
+            <article class="p-5 rounded-lg border border-border bg-bg-surface/30 hover:bg-bg-surface/60 transition-all duration-200 card-hover">
+              <div class="flex items-start justify-between gap-4 mb-2">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide flex-shrink-0"
+                    style={{ backgroundColor: `${styleColor}20`, color: styleColor }}
+                  >
+                    {ep.data.style || ep.data.format}
+                  </span>
+                </div>
+                <span class="text-xs text-text-muted font-body whitespace-nowrap">
+                  {formatDate(ep.data.date)}
+                </span>
+              </div>
+
+              <h3 class="text-lg font-heading font-bold text-text-primary mb-2">
+                {ep.data.title}
+              </h3>
+
+              <p class="text-sm text-text-secondary font-body line-clamp-2">
+                {ep.data.excerpt}
+              </p>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
