@@ -1,0 +1,98 @@
+---
+// ArtistCard.astro - Music artist persona card
+// Props: name, slug, genre, description, accent (CSS color), trackCount
+// Visual card for the music hub page
+
+interface Props {
+  name: string;
+  slug: string;
+  genre: string;
+  description: string;
+  accent: string;
+  trackCount: number;
+}
+
+const { name, slug, genre, description, accent, trackCount } = Astro.props;
+---
+
+<a href={`/music/artist/${slug}`} class="block group">
+  <article
+    class="card-hover rounded-lg overflow-hidden bg-bg-surface border border-border h-full flex flex-col"
+  >
+    <!-- Gradient Header -->
+    <div
+      class="relative h-32 overflow-hidden"
+      style={{
+        background: `linear-gradient(135deg, ${accent}40 0%, ${accent}10 100%)`
+      }}
+    >
+      <!-- Accent top line -->
+      <div
+        class="absolute top-0 left-0 right-0 h-1"
+        style={{ backgroundColor: accent }}
+      ></div>
+
+      <!-- Background accent decoration -->
+      <div
+        class="absolute top-0 right-0 w-40 h-40 rounded-full opacity-10 blur-2xl"
+        style={{ backgroundColor: accent }}
+      ></div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 p-6 flex flex-col">
+      <!-- Artist Name -->
+      <h3
+        class="text-2xl font-heading font-bold leading-tight mb-1 group-hover:text-accent-creative transition-colors"
+        style={{ color: accent }}
+      >
+        {name}
+      </h3>
+
+      <!-- Genre Tag -->
+      <div
+        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-heading font-medium uppercase tracking-wide mb-4 w-fit"
+        style={{
+          backgroundColor: `${accent}15`,
+          color: accent,
+          borderLeft: `2px solid ${accent}`
+        }}
+      >
+        {genre}
+      </div>
+
+      <!-- Description -->
+      <p class="text-sm text-text-secondary font-body leading-relaxed mb-6 line-clamp-3 flex-1">
+        {description}
+      </p>
+
+      <!-- Track Count -->
+      <div class="py-4 border-t border-border border-b mb-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-text-muted font-heading uppercase tracking-widest">Tracks</span>
+          <span
+            class="text-2xl font-heading font-bold"
+            style={{ color: accent }}
+          >
+            {trackCount}
+          </span>
+        </div>
+      </div>
+
+      <!-- Explore Link -->
+      <div class="flex items-center justify-between mt-4">
+        <span class="text-xs text-text-muted uppercase font-heading tracking-widest">
+          View Artist
+        </span>
+        <svg
+          class="w-4 h-4 text-text-secondary group-hover:text-accent-creative transition-colors translate-x-0 group-hover:translate-x-1 duration-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </div>
+    </div>
+  </article>
+</a>

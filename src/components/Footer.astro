@@ -1,0 +1,48 @@
+---
+// Footer.astro - Site footer
+// Dark background with copyright and social links
+
+const socialLinks = [
+  { label: 'GitHub', href: 'https://github.com', icon: 'GH' },
+  { label: 'LinkedIn', href: 'https://linkedin.com', icon: 'IN' },
+  { label: 'Suno', href: 'https://suno.com', icon: 'SN' }
+];
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer
+  class="bg-bg-primary border-t border-border mt-20"
+>
+  <div class="max-w-7xl mx-auto px-6 py-16">
+    <div class="flex flex-col items-center justify-center gap-8">
+      <!-- Copyright -->
+      <p class="text-sm text-text-muted font-body">
+        © {currentYear} Wes Barlow
+      </p>
+
+      <!-- Social Links -->
+      <div class="flex items-center gap-8">
+        {socialLinks.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-xs text-text-secondary hover:text-accent-creative transition-colors duration-200 uppercase tracking-wide"
+            title={link.label}
+          >
+            {link.icon}
+          </a>
+        ))}
+      </div>
+
+      <!-- Subtle divider line -->
+      <div class="w-12 h-0.5 bg-gradient-to-r from-transparent via-border to-transparent"></div>
+
+      <!-- Bottom tagline -->
+      <p class="text-xs text-text-muted text-center max-w-md font-body">
+        Crafted with intention. Built for depth.
+      </p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,105 @@
+---
+// ProjectCard.astro - Generic project/content card
+// Used for fiction projects, insights, general projects
+// Props: title, description, href, tags[], status, cover, accent
+
+import TagPill from './TagPill.astro';
+import StatusBadge from './StatusBadge.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  href: string;
+  tags?: string[];
+  status?: string;
+  cover?: string;
+  accent?: string;
+}
+
+const {
+  title,
+  description,
+  href,
+  tags = [],
+  status,
+  cover,
+  accent = '#d4a04a'
+} = Astro.props;
+---
+
+<a href={href} class="block group">
+  <article
+    class="card-hover bg-bg-surface border border-border rounded-lg overflow-hidden h-full flex flex-col"
+  >
+    <!-- Cover Image Area or Gradient -->
+    {cover || true && (
+      <div
+        class="relative aspect-video overflow-hidden bg-bg-elevated"
+        style={{
+          backgroundImage: cover
+            ? `url('${cover}')`
+            : `linear-gradient(135deg, ${accent}15 0%, ${accent}05 100%)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        {/* Accent line */}
+        <div
+          class="absolute top-0 left-0 right-0 h-1"
+          style={{ backgroundColor: accent }}
+        ></div>
+      </div>
+    )}
+
+    <!-- Content -->
+    <div class="flex-1 p-6 flex flex-col gap-4">
+      <!-- Status Badge -->
+      {status && (
+        <div class="flex justify-end">
+          <StatusBadge status={status} />
+        </div>
+      )}
+
+      <!-- Title -->
+      <h3 class="text-2xl font-heading font-bold text-text-primary leading-snug group-hover:text-accent-creative transition-colors">
+        {title}
+      </h3>
+
+      <!-- Description -->
+      {description && (
+        <p class="text-sm text-text-secondary font-body leading-relaxed line-clamp-3">
+          {description}
+        </p>
+      )}
+
+      <!-- Tags -->
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-border">
+          {tags.slice(0, 3).map((tag) => (
+            <TagPill tag={tag} accent={accent} />
+          ))}
+          {tags.length > 3 && (
+            <span class="text-xs text-text-muted font-body">
+              +{tags.length - 3} more
+            </span>
+          )}
+        </div>
+      )}
+
+      <!-- Arrow indicator -->
+      <div class="flex items-center justify-between mt-4 pt-4 border-t border-border">
+        <span class="text-xs text-text-muted uppercase font-heading tracking-widest">
+          Explore
+        </span>
+        <svg
+          class="w-4 h-4 text-text-secondary group-hover:text-accent-creative transition-colors translate-x-0 group-hover:translate-x-1 duration-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </div>
+    </div>
+  </article>
+</a>

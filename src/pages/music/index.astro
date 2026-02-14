@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+import ArtistCard from '../../components/ArtistCard.astro';
+import TrackCard from '../../components/TrackCard.astro';
+
+// Get all music tracks
+const allMusic = await getCollection('music');
+
+// Count tracks by artist
+const roxyTracks = allMusic.filter(track => track.data.artist === 'roxy');
+const lillyTracks = allMusic.filter(track => track.data.artist === 'lilly');
+const wesTracks = allMusic.filter(track => track.data.artist === 'wes');
+
+// Get featured tracks and sort by date (newest first)
+const featuredTracks = allMusic
+  .filter(track => track.data.featured)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const description = "Three distinct voices. One collaborative vision. Explore Roxy's noir-soaked trip-hop, Lilly's ethereal indie-folk, and Wes's kinetic synthwave.";
+---
+
+<BaseLayout title="Music" description={description}>
+  <!-- Hero Section -->
+  <HeroSection
+    title="Music"
+    subtitle="Three voices. One vision."
+    accent="var(--color-accent-music)"
+  />
+
+  <!-- Intro Section -->
+  <section class="py-16 md:py-20 px-6 bg-bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-lg text-text-secondary font-body leading-relaxed mb-12">
+        Three distinct artistic personas converge in a collaborative exploration of electronic, indie, and experimental music. Each voice brings its own aesthetic, mood, and philosophy—from smoky noir atmospheres to luminous folk whispers to cerebral synthwave journeys. Together, they form a singular artistic vision that refuses to fit neatly into any single genre.
+      </p>
+    </div>
+  </section>
+
+  <!-- Artist Cards Grid -->
+  <section class="py-16 md:py-24 px-6 bg-bg-elevated">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-12">
+        The Artists
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <ArtistCard
+          name="Roxy"
+          slug="roxy"
+          genre="Trip-Hop · Noir-Jazz · Darkwave"
+          description="Smoky vocals over slow-burning beats. Roxy lives in the space between 2am radio and film noir — a voice made for dimly lit rooms and stories with no clean endings."
+          accent="#d4a04a"
+          trackCount={roxyTracks.length}
+        />
+
+        <ArtistCard
+          name="Lilly"
+          slug="lilly"
+          genre="Indie-Folk · Dream-Pop · Ethereal"
+          description="Fingerpicked guitars and layered harmonies. Lilly's sound is a quiet room with tall windows — delicate, luminous, and unafraid of silence."
+          accent="#b04a6f"
+          trackCount={lillyTracks.length}
+        />
+
+        <ArtistCard
+          name="Wes"
+          slug="wes"
+          genre="Synthwave · Electronic · Experimental"
+          description="Arpeggios and algorithms. Wes's productions are kinetic and cerebral — the sound of systems thinking translated into beat-driven electronic music."
+          accent="#5b8fb9"
+          trackCount={wesTracks.length}
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Tracks Section -->
+  {featuredTracks.length > 0 && (
+    <section class="py-16 md:py-24 px-6 bg-bg-primary">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-12">
+          Featured Tracks
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredTracks.map(track => (
+            <TrackCard
+              title={track.data.title}
+              artist={track.data.artist}
+              genre={track.data.genre}
+              mood={track.data.mood}
+              date={track.data.date}
+              cover={track.data.cover}
+              sunoUrl={track.data.sunoUrl}
+              duration={track.data.duration}
+              slug={track.id}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>

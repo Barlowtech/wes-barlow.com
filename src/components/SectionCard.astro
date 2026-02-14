@@ -1,0 +1,68 @@
+---
+// SectionCard.astro - Homepage section link card
+// Props: title, description, href, accent (CSS color), icon (optional emoji)
+// Large card for homepage linking to major sections
+// Gradient background using accent color
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  accent: string;
+  icon?: string;
+}
+
+const { title, description, href, accent, icon } = Astro.props;
+---
+
+<a href={href} class="block group">
+  <div
+    class="card-hover relative rounded-lg overflow-hidden min-h-80 p-8 md:p-12 flex flex-col justify-between text-white transition-all"
+    style={{
+      background: `linear-gradient(135deg, ${accent}30 0%, ${accent}10 100%)`,
+      borderLeft: `3px solid ${accent}`,
+      borderTop: `1px solid ${accent}30`,
+      borderRight: `1px solid ${accent}20`,
+      borderBottom: `1px solid ${accent}20`
+    }}
+  >
+    <!-- Background accent element -->
+    <div
+      class="absolute top-0 right-0 w-96 h-96 rounded-full opacity-5 blur-3xl"
+      style={{ backgroundColor: accent }}
+    ></div>
+
+    <!-- Content -->
+    <div class="relative z-10">
+      <!-- Icon -->
+      {icon && (
+        <div class="text-5xl md:text-6xl mb-6 block">
+          {icon}
+        </div>
+      )}
+
+      <!-- Title -->
+      <h3 class="text-3xl md:text-4xl font-heading font-bold text-white mb-4 leading-tight">
+        {title}
+      </h3>
+
+      <!-- Description -->
+      <p class="text-base text-white/80 font-body leading-relaxed max-w-md">
+        {description}
+      </p>
+    </div>
+
+    <!-- Arrow indicator -->
+    <div class="relative z-10 flex items-center gap-2 mt-8 text-white/70 group-hover:text-white transition-all duration-300">
+      <span class="text-sm font-heading uppercase tracking-widest">Explore</span>
+      <svg
+        class="w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-300"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+      </svg>
+    </div>
+  </div>
+</a>

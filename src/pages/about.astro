@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+---
+
+<BaseLayout title="About" description="Learn about Wes Barlow — writer, musician, and data scientist at the intersection of creativity and AI.">
+  <!-- Hero Section -->
+  <HeroSection title="About" subtitle="The full picture." accent="var(--color-accent-creative)" />
+
+  <!-- Two Column Layout -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-primary">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16">
+      <!-- Creative Side -->
+      <div class="space-y-8">
+        <!-- Section Header -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-12 h-1 bg-accent-creative rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-heading font-bold text-accent-creative">
+              The Creative
+            </h2>
+          </div>
+        </div>
+
+        <!-- Photo Placeholder -->
+        <div class="w-full aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-accent-creative/20 via-accent-creative/5 to-transparent flex items-center justify-center">
+          <div class="text-center text-text-secondary/30">
+            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <p class="text-sm">Portrait placeholder</p>
+          </div>
+        </div>
+
+        <!-- Bio Text -->
+        <div class="space-y-4 text-text-secondary font-body leading-relaxed">
+          <p>
+            Wes Barlow is a writer, musician, and audio producer exploring the intersection of artificial intelligence and human creativity. His debut novel, <em>The Oakwood Murders</em>, is a neo-noir mystery that blends classic hardboiled storytelling with contemporary psychological realism.
+          </p>
+
+          <p>
+            Under multiple artist personas — Roxy (trip-hop/noir-jazz), Lilly (indie-folk/ethereal), and Wes (synthwave/electronic) — he creates AI-generated music that pushes the boundaries of what's possible with tools like Suno. His audio production work spans dramas, audiobooks, and podcasts, all leveraging AI voice synthesis through platforms like Fish Audio and ElevenLabs.
+          </p>
+
+          <p>
+            His creative work isn't about replacing human artistry — it's about discovering what becomes possible when human vision meets machine capability.
+          </p>
+        </div>
+      </div>
+
+      <!-- Professional Side -->
+      <div class="space-y-8">
+        <!-- Section Header -->
+        <div class="space-y-4">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-12 h-1 bg-accent-professional rounded-full"></div>
+            <h2 class="text-3xl md:text-4xl font-heading font-bold text-accent-professional">
+              The Professional
+            </h2>
+          </div>
+        </div>
+
+        <!-- Professional Content Area (matching photo height) -->
+        <div class="w-full aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-accent-professional/20 via-accent-professional/5 to-transparent flex items-center justify-center">
+          <div class="text-center text-text-secondary/30">
+            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            <p class="text-sm">Analytics & insights</p>
+          </div>
+        </div>
+
+        <!-- Bio Text -->
+        <div class="space-y-4 text-text-secondary font-body leading-relaxed">
+          <p>
+            By day, Wes serves as Chief Data and Analytics Officer in financial services, where he leads AI strategy and workforce analytics for a regulated enterprise. He holds a PhD in Psychology with a focus on Industrial-Organizational Psychology, bringing a research-driven perspective to how organizations understand and develop their people.
+          </p>
+
+          <p>
+            His professional work centers on the responsible deployment of AI in highly regulated environments — synthetic data generation, workforce planning models, and the governance frameworks that make AI trustworthy enough for banking. He built WARLab (Workforce Analytics Advanced Research Lab), an AWS-based AI development sandbox for HR analytics.
+          </p>
+
+          <p>
+            He's a vocal advocate for practical, ethical AI — not the hype cycle, but the hard work of making these tools actually useful in environments where the stakes are real.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-surface/50">
+    <div class="max-w-3xl mx-auto space-y-8">
+      <!-- Quote Block -->
+      <div class="relative space-y-6">
+        <blockquote class="text-2xl md:text-3xl font-heading font-bold text-text-primary leading-tight">
+          "The same curiosity that drives a good mystery plot drives a good machine learning model. Both are about finding patterns in noise, asking better questions, and knowing when the answer surprises you."
+        </blockquote>
+
+        <!-- Philosophy Text -->
+        <p class="text-lg text-text-secondary font-body leading-relaxed">
+          This site exists at the intersection of those two worlds. It's where the creative and the analytical meet — not as opposing forces, but as complementary ways of understanding what it means to build something meaningful in the age of AI.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,147 @@
+---
+// TrackCard.astro - Music track display card
+// Props: title, artist, genre[], mood[], date, cover, sunoUrl, duration, slug
+// Artist color logic: roxy = #d4a04a, lilly = #b04a6f, wes = #5b8fb9
+
+import TagPill from './TagPill.astro';
+
+interface Props {
+  title: string;
+  artist: string;
+  genre: string[];
+  mood: string[];
+  date: Date | string;
+  cover?: string;
+  sunoUrl?: string;
+  duration?: string;
+  slug: string;
+}
+
+const { title, artist, genre, mood, date, cover, sunoUrl, duration, slug } = Astro.props;
+
+// Map artist names to their brand colors
+const getArtistColor = (name: string): string => {
+  const normalized = name.toLowerCase();
+  if (normalized.includes('roxy')) return '#d4a04a';
+  if (normalized.includes('lilly')) return '#b04a6f';
+  if (normalized.includes('wes')) return '#5b8fb9';
+  return '#6b7280'; // Default neutral
+};
+
+const artistColor = getArtistColor(artist);
+
+// Format date
+const formatDate = (d: Date | string): string => {
+  if (typeof d === 'string') return d;
+  return new Date(d).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+const displayDate = formatDate(date);
+---
+
+<a href={`/music/${slug}`} class="block group">
+  <article
+    class="card-hover bg-bg-surface border border-border rounded-lg overflow-hidden h-full flex flex-col"
+  >
+    <!-- Cover Art Area -->
+    <div
+      class="relative aspect-square overflow-hidden bg-bg-elevated"
+      style={{
+        backgroundImage: cover
+          ? `url('${cover}')`
+          : `linear-gradient(135deg, ${artistColor}20 0%, ${artistColor}05 100%)`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {!cover && (
+        <div
+          class="absolute inset-0 flex items-center justify-center"
+          style={{ borderLeft: `3px solid ${artistColor}` }}
+        >
+          <div class="text-center">
+            <div
+              class="text-4xl font-heading font-bold opacity-10"
+              style={{ color: artistColor }}
+            >
+              ♫
+            </div>
+          </div>
+        </div>
+      )}
+
+      <!-- Play badge overlay -->
+      {sunoUrl && (
+        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div
+            class="w-12 h-12 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: artistColor }}
+          >
+            <svg
+              class="w-5 h-5 text-black ml-0.5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>
+            </svg>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 p-5 flex flex-col gap-3">
+      <!-- Artist Name (colored) -->
+      <div
+        class="text-xs font-heading font-bold uppercase tracking-widest"
+        style={{ color: artistColor }}
+      >
+        {artist}
+      </div>
+
+      <!-- Track Title -->
+      <h3 class="text-lg font-heading font-bold text-text-primary leading-snug group-hover:text-accent-creative transition-colors">
+        {title}
+      </h3>
+
+      <!-- Genre & Mood Pills -->
+      <div class="flex flex-wrap gap-2 mt-2">
+        {genre.slice(0, 2).map((g) => (
+          <TagPill tag={g} accent={artistColor} />
+        ))}
+        {mood.slice(0, 1).map((m) => (
+          <TagPill tag={m} accent={artistColor} />
+        ))}
+      </div>
+
+      <!-- Meta info -->
+      <div class="mt-auto pt-3 border-t border-border flex items-center justify-between text-xs text-text-muted">
+        <span>{displayDate}</span>
+        {duration && <span>{duration}</span>}
+      </div>
+
+      <!-- Suno link if available -->
+      {sunoUrl && (
+        <div class="mt-3">
+          <a
+            href={sunoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1 text-xs font-heading font-bold uppercase tracking-wide transition-colors"
+            style={{ color: artistColor }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            Listen on Suno
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            </svg>
+          </a>
+        </div>
+      )}
+    </div>
+  </article>
+</a>

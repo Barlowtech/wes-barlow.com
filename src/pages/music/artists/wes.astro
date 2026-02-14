@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HeroSection from '../../../components/HeroSection.astro';
+import TrackCard from '../../../components/TrackCard.astro';
+
+// Get all Wes tracks
+const allMusic = await getCollection('music');
+const tracks = allMusic
+  .filter(track => track.data.artist === 'wes')
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const description = "Wes: Synthwave, electronic, and experimental production. Kinetic and cerebral systems thinking translated into beat-driven music.";
+---
+
+<BaseLayout title="Wes" description={description}>
+  <!-- Hero Section with Wes's color -->
+  <div class="relative w-full py-32 md:py-40 lg:py-48 px-6 bg-bg-primary overflow-hidden">
+    <!-- Accent bar at top -->
+    <div class="absolute top-0 left-0 right-0 h-1" style={{ backgroundColor: '#5b8fb9' }}></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      <h1 class="text-6xl md:text-7xl lg:text-8xl font-heading font-bold leading-tight mb-6 tracking-tight" style={{ color: '#5b8fb9' }}>
+        Wes
+      </h1>
+      <p class="text-lg md:text-xl text-text-secondary font-body max-w-3xl leading-relaxed mb-8">
+        Synthwave · Electronic · Industrial · Experimental
+      </p>
+    </div>
+
+    <!-- Subtle gradient background overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bg-primary/30 pointer-events-none"></div>
+  </div>
+
+  <!-- Artist Bio Section -->
+  <section class="py-16 md:py-24 px-6 bg-bg-elevated">
+    <div class="max-w-3xl mx-auto">
+      <div class="prose prose-invert max-w-none">
+        <p class="text-lg text-text-secondary font-body leading-relaxed mb-8">
+          Wes is the producer in the trio — the one more likely to be found tweaking an arpeggiator than writing lyrics. His music is kinetic, cerebral, and built for motion. Think Carpenter Brut meets Aphex Twin, with a data scientist's love of emergent patterns.
+        </p>
+
+        <p class="text-lg text-text-secondary font-body leading-relaxed mb-8">
+          The production philosophy is systematic: start with a rhythmic skeleton, layer synthesizer textures until something unexpected emerges, then strip it back to what's essential. The result is electronic music that feels both engineered and alive — precise but never sterile.
+        </p>
+
+        <p class="text-lg text-text-secondary font-body leading-relaxed">
+          Wes's tracks are the ones you put on when you're building something. Coding at midnight. Driving fast. Thinking in systems.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Discography Section -->
+  <section class="py-16 md:py-24 px-6 bg-bg-primary">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-12">
+        Discography
+      </h2>
+
+      {tracks.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tracks.map(track => (
+            <TrackCard
+              title={track.data.title}
+              artist={track.data.artist}
+              genre={track.data.genre}
+              mood={track.data.mood}
+              date={track.data.date}
+              cover={track.data.cover}
+              sunoUrl={track.data.sunoUrl}
+              duration={track.data.duration}
+              slug={track.id}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="text-text-secondary text-center py-12">
+          No tracks found for this artist yet.
+        </p>
+      )}
+    </div>
+  </section>
+</BaseLayout>

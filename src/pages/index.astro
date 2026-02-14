@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionCard from '../components/SectionCard.astro';
+import LatestFeed from '../components/LatestFeed.astro';
+
+// Fetch all content from the three collections
+const music = await getCollection('music');
+const fiction = await getCollection('fiction');
+const insights = await getCollection('insights');
+
+// Combine all items and sort by date descending
+const allItems = [
+  ...music.map(m => ({
+    id: m.id,
+    title: m.data.title,
+    date: m.data.date,
+    type: 'Track',
+    href: '#',
+    description: m.data.genre.join(', '),
+    collection: 'music'
+  })),
+  ...fiction.map(f => ({
+    id: f.id,
+    title: f.data.title,
+    date: f.data.date,
+    type: 'Story',
+    href: `/fiction/${f.id}`,
+    description: f.data.tagline,
+    collection: 'fiction'
+  })),
+  ...insights.map(i => ({
+    id: i.id,
+    title: i.data.title,
+    date: i.data.date,
+    type: 'Insight',
+    href: `/insights/${i.id}`,
+    description: i.data.excerpt,
+    collection: 'insights'
+  }))
+];
+
+const sortedItems = allItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 3);
+---
+
+<BaseLayout title="Home">
+  <!-- Hero Section - Custom full viewport -->
+  <section class="relative min-h-screen w-full bg-bg-primary flex items-center justify-center px-6 overflow-hidden">
+    <!-- Animated gradient background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-accent-creative/5 via-bg-primary to-accent-professional/5"></div>
+
+    <!-- Subtle glow effect -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-accent-creative/10 rounded-full blur-3xl"></div>
+
+    <!-- Content -->
+    <div class="relative z-10 text-center max-w-4xl">
+      <!-- Name -->
+      <h1 class="text-6xl md:text-7xl lg:text-8xl font-heading font-bold text-text-primary mb-8 leading-tight tracking-tight">
+        Wes Barlow
+      </h1>
+
+      <!-- Tagline -->
+      <div class="space-y-4">
+        <p class="text-2xl md:text-3xl font-heading text-text-primary">
+          Writer. Musician. Data Scientist.
+        </p>
+        <p class="text-lg md:text-xl text-text-secondary font-body max-w-2xl mx-auto leading-relaxed">
+          Building at the intersection of AI and human creativity.
+        </p>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+        <svg class="w-6 h-6 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Cards Grid -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-surface/50">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <SectionCard
+          title="Music"
+          description="Three artist personas. Trip-hop to synthwave. AI-generated music exploring the boundaries of genre and identity."
+          href="/music/"
+          accent="#b04a6f"
+          icon="♫"
+        />
+        <SectionCard
+          title="Fiction"
+          description="Noir mysteries and literary thrillers. AI-assisted storytelling that puts craft first."
+          href="/fiction/"
+          accent="#d4a04a"
+          icon="✎"
+        />
+        <SectionCard
+          title="Audio"
+          description="Audio dramas, audiobooks, and podcasts. Stories brought to life through voice and sound."
+          href="/audio/"
+          accent="#d4a04a"
+          icon="🎧"
+        />
+        <SectionCard
+          title="Insights"
+          description="Thought leadership on AI in financial services, workforce analytics, and the future of regulated AI."
+          href="/insights/"
+          accent="#5b8fb9"
+          icon="◈"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Activity Feed -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-primary">
+    <div class="max-w-3xl mx-auto">
+      <LatestFeed items={sortedItems} title="Latest Activity" />
+    </div>
+  </section>
+
+  <!-- Who is Wes Barlow Teaser -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-surface/50">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-6">
+        Who is Wes Barlow?
+      </h2>
+      <p class="text-lg text-text-secondary font-body mb-8 leading-relaxed">
+        A writer, musician, and data scientist navigating the intersection of creativity and analytics. By day, he builds AI systems for financial services. By night, he explores what happens when machines and human imagination collide.
+      </p>
+      <a
+        href="/about/"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent-creative/10 hover:bg-accent-creative/20 text-accent-creative font-heading font-bold uppercase tracking-widest transition-colors"
+      >
+        <span>Read Full Story</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+        </svg>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,47 @@
+---
+// StatusBadge.astro - Status indicator badge
+// Props: status (string)
+// Color coding:
+// - in-progress = amber (#d4a04a)
+// - published = green (#4ade80)
+// - coming-soon = blue (#5b8fb9)
+// - active = green (#4ade80)
+// - completed = slate (#6b7280)
+
+interface Props {
+  status: string;
+}
+
+const { status } = Astro.props;
+
+const getStatusColor = (stat: string): { bg: string; text: string } => {
+  const normalized = stat.toLowerCase();
+
+  if (normalized === 'in-progress') {
+    return { bg: '#d4a04a', text: '#0f0f0f' };
+  }
+  if (normalized === 'published' || normalized === 'active') {
+    return { bg: '#4ade80', text: '#0f0f0f' };
+  }
+  if (normalized === 'coming-soon') {
+    return { bg: '#5b8fb9', text: '#ffffff' };
+  }
+  if (normalized === 'completed') {
+    return { bg: '#6b7280', text: '#ffffff' };
+  }
+
+  return { bg: '#6b7280', text: '#ffffff' };
+};
+
+const colors = getStatusColor(status);
+---
+
+<div
+  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide transition-opacity hover:opacity-80"
+  style={{
+    backgroundColor: colors.bg,
+    color: colors.text
+  }}
+>
+  {status}
+</div>

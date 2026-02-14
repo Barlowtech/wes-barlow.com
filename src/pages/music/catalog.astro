@@ -1,0 +1,181 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+import TrackCard from '../../components/TrackCard.astro';
+
+// Get all music tracks, sorted by date (newest first)
+const allMusic = await getCollection('music');
+const tracks = allMusic.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const description = "Browse the complete music catalog. Filter by artist: Roxy (trip-hop, noir-jazz), Lilly (indie-folk, dream-pop), or Wes (synthwave, electronic).";
+---
+
+<BaseLayout title="Music Catalog" description={description}>
+  <!-- Hero Section -->
+  <HeroSection
+    title="Catalog"
+    subtitle="Every track. Every artist."
+    accent="var(--color-accent-music)"
+  />
+
+  <!-- Catalog Section with Filtering -->
+  <section class="py-16 md:py-24 px-6 bg-bg-primary">
+    <div class="max-w-7xl mx-auto">
+      <!-- Filter Controls -->
+      <div class="mb-12">
+        <div class="flex flex-wrap gap-3 items-center">
+          <span class="text-sm text-text-muted font-heading uppercase tracking-widest">
+            Filter by artist:
+          </span>
+          <div class="flex flex-wrap gap-3">
+            <button
+              class="filter-btn active px-4 py-2 rounded-full font-heading font-medium uppercase tracking-wide text-sm transition-all duration-200"
+              data-artist="all"
+              style={{
+                backgroundColor: 'var(--color-accent-creative)15',
+                color: 'var(--color-accent-creative)',
+                borderLeft: '2px solid var(--color-accent-creative)'
+              }}
+            >
+              All
+            </button>
+
+            <button
+              class="filter-btn px-4 py-2 rounded-full font-heading font-medium uppercase tracking-wide text-sm transition-all duration-200"
+              data-artist="roxy"
+              style={{
+                backgroundColor: '#d4a04a15',
+                color: '#d4a04a',
+                borderLeft: '2px solid #d4a04a'
+              }}
+            >
+              Roxy
+            </button>
+
+            <button
+              class="filter-btn px-4 py-2 rounded-full font-heading font-medium uppercase tracking-wide text-sm transition-all duration-200"
+              data-artist="lilly"
+              style={{
+                backgroundColor: '#b04a6f15',
+                color: '#b04a6f',
+                borderLeft: '2px solid #b04a6f'
+              }}
+            >
+              Lilly
+            </button>
+
+            <button
+              class="filter-btn px-4 py-2 rounded-full font-heading font-medium uppercase tracking-wide text-sm transition-all duration-200"
+              data-artist="wes"
+              style={{
+                backgroundColor: '#5b8fb915',
+                color: '#5b8fb9',
+                borderLeft: '2px solid #5b8fb9'
+              }}
+            >
+              Wes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tracks Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {tracks.map(track => (
+          <div
+            class="track-item"
+            data-artist={track.data.artist}
+            style={{ display: 'block' }}
+          >
+            <TrackCard
+              title={track.data.title}
+              artist={track.data.artist}
+              genre={track.data.genre}
+              mood={track.data.mood}
+              date={track.data.date}
+              cover={track.data.cover}
+              sunoUrl={track.data.sunoUrl}
+              duration={track.data.duration}
+              slug={track.id}
+            />
+          </div>
+        ))}
+      </div>
+
+      <!-- No Results Message -->
+      <div id="no-results" style={{ display: 'none' }} class="text-center py-16">
+        <p class="text-text-secondary text-lg">
+          No tracks found for the selected artist.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Client-side filtering
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const trackItems = document.querySelectorAll('.track-item');
+    const noResults = document.getElementById('no-results');
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedArtist = button.getAttribute('data-artist');
+
+        // Update active button styling
+        filterButtons.forEach(btn => {
+          if (btn.getAttribute('data-artist') === selectedArtist) {
+            btn.classList.add('active');
+            // Add opacity to active button
+            btn.style.opacity = '1';
+            btn.style.fontWeight = '700';
+          } else {
+            btn.classList.remove('active');
+            btn.style.opacity = '0.6';
+            btn.style.fontWeight = '500';
+          }
+        });
+
+        // Filter tracks
+        let visibleCount = 0;
+        trackItems.forEach(item => {
+          const itemArtist = item.getAttribute('data-artist');
+          if (selectedArtist === 'all' || itemArtist === selectedArtist) {
+            item.style.display = 'block';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        // Show/hide no results message
+        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+      });
+    });
+
+    // Initialize first button as active
+    const firstButton = filterButtons[0];
+    if (firstButton) {
+      firstButton.style.opacity = '1';
+      firstButton.style.fontWeight = '700';
+    }
+  });
+</script>
+
+<style>
+  .filter-btn {
+    cursor: pointer;
+    transition: opacity 0.2s ease, font-weight 0.2s ease;
+  }
+
+  .filter-btn.active {
+    opacity: 1;
+    font-weight: 700;
+  }
+
+  .track-item {
+    transition: opacity 0.3s ease;
+  }
+</style>

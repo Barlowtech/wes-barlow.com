@@ -1,0 +1,23 @@
+---
+// TagPill.astro - Small tag/genre pill
+// Props: tag (string), accent (optional, default #6b7280)
+// Used inside cards for genres, topics, etc.
+
+interface Props {
+  tag: string;
+  accent?: string;
+}
+
+const { tag, accent = '#6b7280' } = Astro.props;
+---
+
+<span
+  class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-heading font-medium uppercase tracking-wide transition-all hover:opacity-90"
+  style={{
+    backgroundColor: `${accent}15`,
+    color: accent,
+    borderLeft: `2px solid ${accent}`
+  }}
+>
+  {tag}
+</span>

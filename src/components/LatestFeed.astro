@@ -1,0 +1,108 @@
+---
+// LatestFeed.astro - Recent content feed component
+// Props: items - Array of {title, href, type, date, description}
+// Shows 3 items in a clean list/card layout
+// Type colors: Track = rose (#b04a6f), Story = amber (#d4a04a), Insight = blue (#5b8fb9)
+
+interface FeedItem {
+  title: string;
+  href: string;
+  type: 'Track' | 'Story' | 'Insight' | string;
+  date: Date | string;
+  description?: string;
+}
+
+interface Props {
+  items: FeedItem[];
+  title?: string;
+}
+
+const { items, title = 'Latest' } = Astro.props;
+
+const getTypeColor = (type: string): string => {
+  const normalized = type.toLowerCase();
+  if (normalized === 'track') return '#b04a6f';
+  if (normalized === 'story') return '#d4a04a';
+  if (normalized === 'insight') return '#5b8fb9';
+  return '#6b7280'; // Default neutral
+};
+
+const formatDate = (d: Date | string): string => {
+  if (typeof d === 'string') return d;
+  const date = new Date(d);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (date.toDateString() === today.toDateString()) return 'Today';
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+  });
+};
+---
+
+<section class="w-full">
+  {title && (
+    <h2 class="text-2xl font-heading font-bold text-text-primary mb-8">
+      {title}
+    </h2>
+  )}
+
+  <div class="space-y-4">
+    {items.slice(0, 3).map((item) => {
+      const typeColor = getTypeColor(item.type);
+      const displayDate = formatDate(item.date);
+
+      return (
+        <a
+          href={item.href}
+          class="group block"
+        >
+          <div class="p-5 rounded-lg border border-border bg-bg-surface/30 hover:bg-bg-surface/60 transition-all duration-200 card-hover">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <!-- Type Badge -->
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-heading font-bold uppercase tracking-wide flex-shrink-0"
+                style={{
+                  backgroundColor: `${typeColor}20`,
+                  color: typeColor
+                }}
+              >
+                {item.type}
+              </span>
+
+              <!-- Date -->
+              <span class="text-xs text-text-muted font-body whitespace-nowrap">
+                {displayDate}
+              </span>
+            </div>
+
+            <!-- Title -->
+            <h3 class="text-lg font-heading font-bold text-text-primary group-hover:text-accent-creative transition-colors mb-2">
+              {item.title}
+            </h3>
+
+            <!-- Description -->
+            {item.description && (
+              <p class="text-sm text-text-secondary font-body line-clamp-2">
+                {item.description}
+              </p>
+            )}
+
+            <!-- Arrow -->
+            <div class="flex items-center gap-1 mt-3 text-text-muted group-hover:text-accent-creative transition-colors text-xs font-heading uppercase tracking-widest">
+              <span>Read</span>
+              <svg class="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+</section>

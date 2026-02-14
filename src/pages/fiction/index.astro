@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const fiction = await getCollection('fiction');
+const sortedFiction = fiction.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<BaseLayout
+  title="Fiction"
+  description="Noir mysteries and literary thrillers. AI-assisted storytelling that puts craft first."
+>
+  <HeroSection
+    title="Fiction"
+    subtitle="Stories that don't stay on the page."
+    accent="#d4a04a"
+  />
+
+  <!-- Introduction Section -->
+  <section class="w-full py-12 md:py-16 px-6 bg-bg-primary border-b border-border">
+    <div class="max-w-3xl mx-auto">
+      <p class="text-lg text-text-secondary font-body leading-relaxed">
+        Noir mysteries, literary thrillers, and stories where the genre is just the starting point. Each project is developed using a hybrid AI-assisted workflow — human creative direction meets machine capability.
+      </p>
+    </div>
+  </section>
+
+  <!-- Fiction Grid -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-surface/50">
+    <div class="max-w-7xl mx-auto">
+      {sortedFiction.length === 0 ? (
+        <div class="text-center py-12">
+          <p class="text-text-secondary font-body text-lg">
+            Stories coming soon. Stay tuned.
+          </p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {sortedFiction.map((entry) => (
+            <ProjectCard
+              title={entry.data.title}
+              description={entry.data.tagline}
+              href={`/fiction/${entry.id}`}
+              tags={entry.data.genre}
+              status={entry.data.status}
+              cover={entry.data.cover}
+              accent="#d4a04a"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

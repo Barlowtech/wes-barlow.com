@@ -1,0 +1,139 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagPill from '../../components/TagPill.astro';
+
+export async function getStaticPaths() {
+  const insights = await getCollection('insights');
+  return insights.map(entry => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Format date
+const formattedDate = new Date(entry.data.date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+// Get all insights to find related ones
+const allInsights = await getCollection('insights');
+const relatedInsights = allInsights
+  .filter(
+    post =>
+      post.id !== entry.id &&
+      post.data.tags.some(tag => entry.data.tags.includes(tag))
+  )
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 2);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.excerpt}
+>
+  <!-- Article Header -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-primary border-b border-border">
+    <div class="max-w-3xl mx-auto">
+      <!-- Title -->
+      <h1 class="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-text-primary mb-8 leading-tight">
+        {entry.data.title}
+      </h1>
+
+      <!-- Meta Line: Date · Reading Time · Tags -->
+      <div class="flex flex-wrap items-center gap-4 text-sm text-text-secondary font-body mb-8">
+        <span>{formattedDate}</span>
+        <span>·</span>
+        <span>{entry.data.readingTime} min read</span>
+        {entry.data.tags.length > 0 && (
+          <>
+            <span>·</span>
+            <div class="flex gap-2">
+              {entry.data.tags.map((tag) => (
+                <TagPill tag={tag} accent="#5b8fb9" />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+
+    <!-- Accent bar -->
+    <div class="absolute top-0 left-0 right-0 h-1 bg-accent-professional"></div>
+  </section>
+
+  <!-- Article Body -->
+  <section class="w-full py-16 md:py-24 px-6 bg-bg-primary">
+    <div class="max-w-3xl mx-auto prose">
+      <Content />
+    </div>
+  </section>
+
+  <!-- Footer Section with Navigation -->
+  <section class="w-full py-12 md:py-16 px-6 bg-bg-surface/50 border-t border-border">
+    <div class="max-w-3xl mx-auto">
+      <!-- Divider -->
+      <div class="border-t border-border mb-12"></div>
+
+      <!-- Back Link -->
+      <div class="mb-12">
+        <a
+          href="/insights/"
+          class="inline-flex items-center gap-2 text-accent-professional hover:text-accent-professional/80 font-heading font-bold uppercase tracking-widest transition-colors"
+        >
+          <svg
+            class="w-4 h-4 rotate-180"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+          <span>More Insights</span>
+        </a>
+      </div>
+
+      <!-- Related Posts Section -->
+      {relatedInsights.length > 0 && (
+        <>
+          <div class="border-t border-border pt-12">
+            <h3 class="text-xl font-heading font-bold text-text-primary mb-6">
+              Related Articles
+            </h3>
+            <div class="space-y-4">
+              {relatedInsights.map((related) => {
+                const relatedDate = new Date(related.data.date).toLocaleDateString(
+                  'en-US',
+                  { year: 'numeric', month: 'short', day: 'numeric' }
+                );
+                return (
+                  <div>
+                    <a
+                      href={`/insights/${related.id}`}
+                      class="block group"
+                    >
+                      <h4 class="text-lg font-heading font-semibold text-text-primary group-hover:text-accent-professional transition-colors mb-2">
+                        {related.data.title}
+                      </h4>
+                      <p class="text-sm text-text-secondary font-body mb-2">
+                        {relatedDate}
+                      </p>
+                      <p class="text-sm text-text-secondary font-body line-clamp-2">
+                        {related.data.excerpt}
+                      </p>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+</BaseLayout>
