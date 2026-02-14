@@ -39,9 +39,12 @@ const formatDate = (d: Date | string): string => {
 };
 
 const displayDate = formatDate(date);
+
+// Link destination: prefer Suno URL, fall back to Spotify artist page
+const linkUrl = sunoUrl || 'https://open.spotify.com/artist/5J5r2rrSFjWkb4ZPs77WK0';
 ---
 
-<div class="block group">
+<a href={linkUrl} target="_blank" rel="noopener noreferrer" class="block group">
   <article
     class="card-hover bg-bg-surface border border-border rounded-lg overflow-hidden h-full flex flex-col"
   >
@@ -122,24 +125,14 @@ const displayDate = formatDate(date);
         {duration && <span>{duration}</span>}
       </div>
 
-      <!-- Suno link if available -->
-      {sunoUrl && (
-        <div class="mt-3">
-          <a
-            href={sunoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 text-xs font-heading font-bold uppercase tracking-wide transition-colors"
-            style={{ color: artistColor }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            Listen on Suno
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-            </svg>
-          </a>
-        </div>
-      )}
+      <!-- Listen indicator -->
+      <div class="mt-3 flex items-center gap-1 text-xs font-heading font-bold uppercase tracking-wide group-hover:translate-x-1 transition-transform"
+        style={{ color: artistColor }}>
+        <span>{sunoUrl ? 'Listen on Suno' : 'Listen on Spotify'}</span>
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+        </svg>
+      </div>
     </div>
   </article>
-</div>
+</a>
