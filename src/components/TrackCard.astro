@@ -1,7 +1,7 @@
 ---
 // TrackCard.astro - Music track display card
 // Props: title, artist, genre[], mood[], date, cover, sunoUrl, duration, slug
-// Artist color logic: roxy = #d4a04a, lilly = #b04a6f, wes = #5b8fb9
+// Artist color: audiotelic = #b04a6f (music accent)
 
 import TagPill from './TagPill.astro';
 
@@ -22,9 +22,7 @@ const { title, artist, genre, mood, date, cover, sunoUrl, duration, slug } = Ast
 // Map artist names to their brand colors
 const getArtistColor = (name: string): string => {
   const normalized = name.toLowerCase();
-  if (normalized.includes('roxy')) return '#d4a04a';
-  if (normalized.includes('lilly')) return '#b04a6f';
-  if (normalized.includes('wes')) return '#5b8fb9';
+  if (normalized.includes('audiotelic')) return '#b04a6f';
   return '#6b7280'; // Default neutral
 };
 
@@ -43,7 +41,7 @@ const formatDate = (d: Date | string): string => {
 const displayDate = formatDate(date);
 ---
 
-<a href={`/music/${slug}`} class="block group">
+<div class="block group">
   <article
     class="card-hover bg-bg-surface border border-border rounded-lg overflow-hidden h-full flex flex-col"
   >
@@ -144,4 +142,4 @@ const displayDate = formatDate(date);
       )}
     </div>
   </article>
-</a>
+</div>

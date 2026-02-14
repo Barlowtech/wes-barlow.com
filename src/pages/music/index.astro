@@ -2,104 +2,102 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroSection from '../../components/HeroSection.astro';
-import ArtistCard from '../../components/ArtistCard.astro';
 import TrackCard from '../../components/TrackCard.astro';
 
 // Get all music tracks
 const allMusic = await getCollection('music');
 
-// Count tracks by artist
-const roxyTracks = allMusic.filter(track => track.data.artist === 'roxy');
-const lillyTracks = allMusic.filter(track => track.data.artist === 'lilly');
-const wesTracks = allMusic.filter(track => track.data.artist === 'wes');
+// Group by album
+const albumMap = new Map<string, typeof allMusic>();
+for (const track of allMusic) {
+  const album = track.data.album || 'Singles';
+  if (!albumMap.has(album)) albumMap.set(album, []);
+  albumMap.get(album)!.push(track);
+}
 
-// Get featured tracks and sort by date (newest first)
-const featuredTracks = allMusic
-  .filter(track => track.data.featured)
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+// Sort albums: named albums by newest track date, Singles last
+const albumEntries = [...albumMap.entries()].sort((a, b) => {
+  if (a[0] === 'Singles') return 1;
+  if (b[0] === 'Singles') return -1;
+  const aDate = Math.max(...a[1].map(t => new Date(t.data.date).getTime()));
+  const bDate = Math.max(...b[1].map(t => new Date(t.data.date).getTime()));
+  return bDate - aDate;
+});
 
-const description = "Three distinct voices. One collaborative vision. Explore Roxy's noir-soaked trip-hop, Lilly's ethereal indie-folk, and Wes's kinetic synthwave.";
+const description = "Audiotelic — a multidisciplinary music project where the making is the point. AI-human collaboration across genres, from concept albums to creative experiments.";
 ---
 
 <BaseLayout title="Music" description={description}>
   <!-- Hero Section -->
   <HeroSection
     title="Music"
-    subtitle="Three voices. One vision."
+    subtitle="The making is the point."
     accent="var(--color-accent-music)"
   />
 
-  <!-- Intro Section -->
+  <!-- Audiotelic Intro -->
   <section class="py-16 md:py-20 px-6 bg-bg-primary">
     <div class="max-w-3xl mx-auto">
-      <p class="text-lg text-text-secondary font-body leading-relaxed mb-12">
-        Three distinct artistic personas converge in a collaborative exploration of electronic, indie, and experimental music. Each voice brings its own aesthetic, mood, and philosophy—from smoky noir atmospheres to luminous folk whispers to cerebral synthwave journeys. Together, they form a singular artistic vision that refuses to fit neatly into any single genre.
+      <div class="flex items-center gap-4 mb-8">
+        <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary">
+          Audiotelic
+        </h2>
+        <a
+          href="https://open.spotify.com/artist/5J5r2rrSFjWkb4ZPs77WK0"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1DB954]/10 hover:bg-[#1DB954]/20 text-[#1DB954] text-sm font-heading font-bold uppercase tracking-wide transition-colors"
+        >
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+          <span>Spotify</span>
+        </a>
+      </div>
+
+      <p class="text-lg text-text-secondary font-body leading-relaxed mb-4">
+        Audiotelic is a multidisciplinary music project built on a simple premise: <em>the making is the point</em>. The name blends <em>audio</em> with <em>autotelic</em> — the psychological concept of doing something for the intrinsic reward of doing it.
+      </p>
+      <p class="text-lg text-text-secondary font-body leading-relaxed">
+        The process: write lyrics collaboratively with AI, generate music through Suno, shape and refine, release through DistroKid, repeat. Every song is a data point. Every album is a build. The human brings the taste, the humor, and the emotional instinct. The AI brings speed, range, and an utter lack of self-consciousness about genre boundaries.
       </p>
     </div>
   </section>
 
-  <!-- Artist Cards Grid -->
-  <section class="py-16 md:py-24 px-6 bg-bg-elevated">
-    <div class="max-w-7xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-12">
-        The Artists
-      </h2>
+  <!-- Albums & Tracks -->
+  {albumEntries.map(([albumName, tracks]) => {
+    const sortedTracks = tracks.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <ArtistCard
-          name="Roxy"
-          slug="roxy"
-          genre="Trip-Hop · Noir-Jazz · Darkwave"
-          description="Smoky vocals over slow-burning beats. Roxy lives in the space between 2am radio and film noir — a voice made for dimly lit rooms and stories with no clean endings."
-          accent="#d4a04a"
-          trackCount={roxyTracks.length}
-        />
+    return (
+      <section class="py-12 md:py-16 px-6 bg-bg-elevated odd:bg-bg-primary">
+        <div class="max-w-7xl mx-auto">
+          <div class="flex items-center gap-3 mb-8">
+            <div class="w-8 h-1 bg-accent-music rounded-full"></div>
+            <h2 class="text-2xl md:text-3xl font-heading font-bold text-text-primary">
+              {albumName}
+            </h2>
+            <span class="text-sm text-text-muted font-body">
+              {tracks.length} {tracks.length === 1 ? 'track' : 'tracks'}
+            </span>
+          </div>
 
-        <ArtistCard
-          name="Lilly"
-          slug="lilly"
-          genre="Indie-Folk · Dream-Pop · Ethereal"
-          description="Fingerpicked guitars and layered harmonies. Lilly's sound is a quiet room with tall windows — delicate, luminous, and unafraid of silence."
-          accent="#b04a6f"
-          trackCount={lillyTracks.length}
-        />
-
-        <ArtistCard
-          name="Wes"
-          slug="wes"
-          genre="Synthwave · Electronic · Experimental"
-          description="Arpeggios and algorithms. Wes's productions are kinetic and cerebral — the sound of systems thinking translated into beat-driven electronic music."
-          accent="#5b8fb9"
-          trackCount={wesTracks.length}
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Tracks Section -->
-  {featuredTracks.length > 0 && (
-    <section class="py-16 md:py-24 px-6 bg-bg-primary">
-      <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl md:text-4xl font-heading font-bold text-text-primary mb-12">
-          Featured Tracks
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredTracks.map(track => (
-            <TrackCard
-              title={track.data.title}
-              artist={track.data.artist}
-              genre={track.data.genre}
-              mood={track.data.mood}
-              date={track.data.date}
-              cover={track.data.cover}
-              sunoUrl={track.data.sunoUrl}
-              duration={track.data.duration}
-              slug={track.id}
-            />
-          ))}
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sortedTracks.map(track => (
+              <TrackCard
+                title={track.data.title}
+                artist="audiotelic"
+                genre={track.data.genre}
+                mood={track.data.mood}
+                date={track.data.date}
+                cover={track.data.cover}
+                sunoUrl={track.data.sunoUrl}
+                duration={track.data.duration}
+                slug={track.id}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
-  )}
+      </section>
+    );
+  })}
 </BaseLayout>

@@ -4,9 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionCard from '../components/SectionCard.astro';
 import LatestFeed from '../components/LatestFeed.astro';
 
-// Fetch all content from the three collections
+// Fetch all content from active collections
 const music = await getCollection('music');
-const fiction = await getCollection('fiction');
 const insights = await getCollection('insights');
 
 // Combine all items and sort by date descending
@@ -16,18 +15,9 @@ const allItems = [
     title: m.data.title,
     date: m.data.date,
     type: 'Track',
-    href: '#',
+    href: '/music/',
     description: m.data.genre.join(', '),
     collection: 'music'
-  })),
-  ...fiction.map(f => ({
-    id: f.id,
-    title: f.data.title,
-    date: f.data.date,
-    type: 'Story',
-    href: `/fiction/${f.id}`,
-    description: f.data.tagline,
-    collection: 'fiction'
   })),
   ...insights.map(i => ({
     id: i.id,
@@ -62,7 +52,7 @@ const sortedItems = allItems.sort((a, b) => new Date(b.date).getTime() - new Dat
       <!-- Tagline -->
       <div class="space-y-4">
         <p class="text-2xl md:text-3xl font-heading text-text-primary">
-          Writer. Musician. Data Scientist.
+          Musician. Data Scientist. Builder.
         </p>
         <p class="text-lg md:text-xl text-text-secondary font-body max-w-2xl mx-auto leading-relaxed">
           Building at the intersection of AI and human creativity.
@@ -84,24 +74,10 @@ const sortedItems = allItems.sort((a, b) => new Date(b.date).getTime() - new Dat
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <SectionCard
           title="Music"
-          description="Three artist personas. Trip-hop to synthwave. AI-generated music exploring the boundaries of genre and identity."
+          description="Audiotelic — AI-human collaborative music across every genre. The making is the point."
           href="/music/"
           accent="#b04a6f"
           icon="♫"
-        />
-        <SectionCard
-          title="Fiction"
-          description="Noir mysteries and literary thrillers. AI-assisted storytelling that puts craft first."
-          href="/fiction/"
-          accent="#d4a04a"
-          icon="✎"
-        />
-        <SectionCard
-          title="Audio"
-          description="Audio dramas, audiobooks, and podcasts. Stories brought to life through voice and sound."
-          href="/audio/"
-          accent="#d4a04a"
-          icon="🎧"
         />
         <SectionCard
           title="Insights"
@@ -128,7 +104,7 @@ const sortedItems = allItems.sort((a, b) => new Date(b.date).getTime() - new Dat
         Who is Wes Barlow?
       </h2>
       <p class="text-lg text-text-secondary font-body mb-8 leading-relaxed">
-        A writer, musician, and data scientist navigating the intersection of creativity and analytics. By day, he builds AI systems for financial services. By night, he explores what happens when machines and human imagination collide.
+        A musician, data scientist, and creative experimenter navigating the intersection of creativity and analytics. By day, he builds AI systems for financial services. By night, he explores what happens when machines and human imagination collide.
       </p>
       <a
         href="/about/"

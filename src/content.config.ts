@@ -5,26 +5,15 @@ const music = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/music" }),
   schema: z.object({
     title: z.string(),
-    artist: z.enum(['roxy', 'lilly', 'wes']),
+    album: z.string().optional(),
     genre: z.array(z.string()),
     mood: z.array(z.string()),
     date: z.coerce.date(),
     cover: z.string().optional(),
     sunoUrl: z.string().optional(),
+    spotifyUrl: z.string().optional(),
     duration: z.string(),
     featured: z.boolean().default(false),
-  }),
-});
-
-const fiction = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/fiction" }),
-  schema: z.object({
-    title: z.string(),
-    genre: z.array(z.string()),
-    status: z.enum(['in-progress', 'published', 'coming-soon']),
-    cover: z.string().optional(),
-    tagline: z.string(),
-    date: z.coerce.date(),
   }),
 });
 
@@ -40,4 +29,4 @@ const insights = defineCollection({
   }),
 });
 
-export const collections = { music, fiction, insights };
+export const collections = { music, insights };
