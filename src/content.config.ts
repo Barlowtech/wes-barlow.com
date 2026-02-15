@@ -14,6 +14,7 @@ const music = defineCollection({
     spotifyUrl: z.string().optional(),
     duration: z.string(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -27,6 +28,7 @@ const audio = defineCollection({
     excerpt: z.string(),
     speechifyUrl: z.string().optional(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -39,6 +41,7 @@ const insights = defineCollection({
     excerpt: z.string(),
     readingTime: z.number(),
     featured: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

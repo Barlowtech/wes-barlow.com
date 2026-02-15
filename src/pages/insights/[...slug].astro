@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TagPill from '../../components/TagPill.astro';
 
 export async function getStaticPaths() {
-  const insights = await getCollection('insights');
+  const insights = await getCollection('insights', ({ data }) => !data.draft);
   return insights.map(entry => ({
     params: { slug: entry.id },
     props: { entry },
@@ -22,7 +22,7 @@ const formattedDate = new Date(entry.data.date).toLocaleDateString('en-US', {
 });
 
 // Get all insights to find related ones
-const allInsights = await getCollection('insights');
+const allInsights = await getCollection('insights', ({ data }) => !data.draft);
 const relatedInsights = allInsights
   .filter(
     post =>

@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroSection from '../../components/HeroSection.astro';
 import TagPill from '../../components/TagPill.astro';
 
-const insights = await getCollection('insights');
+const insights = await getCollection('insights', ({ data }) => !data.draft);
 const sortedInsights = insights.sort(
   (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );

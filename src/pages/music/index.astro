@@ -5,7 +5,7 @@ import HeroSection from '../../components/HeroSection.astro';
 import TrackCard from '../../components/TrackCard.astro';
 
 // Get all music tracks
-const allMusic = await getCollection('music');
+const allMusic = await getCollection('music', ({ data }) => !data.draft);
 
 // Group by album
 const albumMap = new Map<string, typeof allMusic>();

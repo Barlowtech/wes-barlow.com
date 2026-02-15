@@ -5,9 +5,9 @@ import SectionCard from '../components/SectionCard.astro';
 import LatestFeed from '../components/LatestFeed.astro';
 
 // Fetch all content from active collections
-const music = await getCollection('music');
-const audio = await getCollection('audio');
-const insights = await getCollection('insights');
+const music = await getCollection('music', ({ data }) => !data.draft);
+const audio = await getCollection('audio', ({ data }) => !data.draft);
+const insights = await getCollection('insights', ({ data }) => !data.draft);
 
 // Combine all items and sort by date descending
 const allItems = [
